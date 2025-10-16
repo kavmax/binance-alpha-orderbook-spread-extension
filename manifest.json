@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Binance Alpha Orderbook Aggregator",
+  "version": "1.0",
+  "description": "Собирает стаканы из вкладок Binance Alpha и передает в центральную вкладку.",
+  "permissions": ["tabs", "storage", "scripting"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.binance.com/en/alpha/*"],
+      "js": ["content_script.js"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "Orderbook Aggregator"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["dashboard.html", "dashboard.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

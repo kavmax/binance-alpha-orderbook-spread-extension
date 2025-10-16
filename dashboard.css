@@ -1,0 +1,22 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    text-align: center;
+}
+#currencyInfo {
+    font-size: 18px;
+    margin-top: 20px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+th, td {
+    border: 1px solid #b6b6b6;
+    padding: 4px 6px;
+    text-align: left;
+}
+th {
+    background-color: rgba(200, 200, 200, 0.2);
+}
