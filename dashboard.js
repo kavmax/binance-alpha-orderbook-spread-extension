@@ -101,19 +101,27 @@ class Spread {
 
     calculateSpreadPriority() {
         if (this.percent_profit >= 0.12 && this.getSpreadLifetimeInSeconds() < 3)
+            this.spread_priority = 100
+        else if (this.percent_profit >= 0.02 && this.getSpreadLifetimeInSeconds() < 3)
             this.spread_priority = 99
-        else if (this.percent_profit >= 0.12)
+        else if (this.percent_profit >= 0.02)
             this.spread_priority = 98
-        else
+        else if (this.percent_profit >= -0.001 && this.percent_profit <= 0.001 && this.getSpreadLifetimeInSeconds() < 3)
             this.spread_priority = 97
+        else
+            this.spread_priority = 96
     }
 
     statusToColor(statusCode) {
-        if (statusCode === 99)
+        if (statusCode === 100)
+            return "rgba(244,154,36,0.29)"
+        else if (statusCode === 99)
             return "rgba(0,255,0,0.16)"
         else if (statusCode === 98)
             return "rgba(128,128,128,0.27)"
         else if (statusCode === 97)
+            return "rgba(255,114,251,0.22)"
+        else if (statusCode === 96)
             return "rgba(255,0,0,0.22)"
         else
             return "rgba(18,15,15,0.28)"
