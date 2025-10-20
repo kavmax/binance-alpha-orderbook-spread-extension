@@ -20,3 +20,21 @@ th, td {
 th {
     background-color: rgba(200, 200, 200, 0.2);
 }
+
+.history-cell {
+    display: flex;
+    gap: 3px;           /* расстояние между квадратиками */
+    padding: 5px;
+}
+
+.square {
+    width: 10px;
+    height: 10px;
+    background-color: #ccc;
+    border-radius: 2px;
+    transition: background-color 0.2s;
+}
+
+.square.active {
+    background-color: #4caf50; /* зелёный, если 1 */
+}

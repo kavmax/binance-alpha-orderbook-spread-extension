@@ -89,3 +89,63 @@ setInterval(() => {
 setInterval(() => {
     console.clear()
 }, 10000)
+
+// // Простая функция sleep
+// function sleep(ms) {
+//     return new Promise(resolve => setTimeout(resolve, ms));
+// }
+//
+// // Основная функция
+// async function setupMutationObserverForOrderBook() {
+//     // Ждем появления контейнера
+//     let container;
+//     while (!(container = document.querySelector('.ReactVirtualized__Grid__innerScrollContainer'))) {
+//         console.warn('⚠️ Container not found, waiting 1 second...');
+//         await sleep(1000);
+//     }
+//
+//     console.log('✅ Container found, starting MutationObserver');
+//
+//     // debounce: задержка перед отправкой данных после последнего изменения
+//     let sendTimeout;
+//
+//     const observer = new MutationObserver(() => {
+//         // сбрасываем предыдущий таймер
+//         if (sendTimeout) clearTimeout(sendTimeout);
+//
+//         // запускаем новый таймер на 100 мс
+//         sendTimeout = setTimeout(() => {
+//             const fullOrderBookData = {
+//                 orderBookData: getOrderBookData(),
+//                 currencyInfo: getCurrencyInfo(),
+//             };
+//
+//             if (chrome.runtime && chrome.runtime.id) {
+//                 chrome.runtime.sendMessage(
+//                     { type: 'currencyInfo', data: fullOrderBookData },
+//                     (response) => {
+//                         if (chrome.runtime.lastError) {
+//                             console.error('Ошибка отправки:', chrome.runtime.lastError.message);
+//                             return;
+//                         }
+//                         console.log('Data sent to background.js:', response);
+//                     }
+//                 );
+//             }
+//
+//         }, 100); // ждем 100 мс после последнего изменения
+//     });
+//
+//     // подписка на изменения
+//     observer.observe(container, {
+//         childList: true,      // добавление/удаление элементов
+//         subtree: true,        // внутри всех потомков
+//         characterData: true   // изменение текста
+//     });
+//
+//     console.log('✅ MutationObserver запущен для ордербука');
+// }
+//
+// // Запуск
+// setupMutationObserverForOrderBook();
+

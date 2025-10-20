@@ -41,14 +41,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             }
 
             // Отправляем данные во вкладку dashboard.html
-            chrome.tabs.sendMessage(tab.id, { type: 'currencyInfo', data: message.data }, (response) => {
+            chrome.tabs.sendMessage(tab.id, { type: 'fullOrderBookData', data: message.data }, (response) => {
                 if (chrome.runtime.lastError) {
                     console.error('Ошибка отправки в dashboard:', chrome.runtime.lastError.message);
                     sendResponse({ status: 'error' });
                     return;
                 }
                 console.log('Данные отправлены в dashboard:', response);
-                sendResponse({ status: 'success' });
+                sendResponse({ status: 'success', ok: true });
             });
         });
         return true; // Асинхронный ответ
