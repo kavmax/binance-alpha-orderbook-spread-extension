@@ -58,6 +58,10 @@ class TransactionsQuotePair {
     hasBothQuotesTransactions() {
         return this.usdtTransactions.length > 0 && this.usdcTransactions.length > 0;
     }
+
+    hasUsdtTransactions() {
+        return this.usdtTransactions.length > 0;
+    }
 }
 
 class Spread {
@@ -138,6 +142,7 @@ class Spreader {
 
         this.usdtUsdcSpreads = new Map();
         this.usdcUsdtSpreads = new Map();
+        this.usdtUsdtSpreads = new Map();
         // this.usdcUsdtSpreads =
     }
 
@@ -160,6 +165,16 @@ class Spreader {
 
             this.usdtUsdcSpreads.set(transactionsQuotePair.base, usdtUsdcSpread)
             this.usdcUsdtSpreads.set(transactionsQuotePair.base, usdcUsdtSpread)
+        }
+
+        if (transactionsQuotePair.hasUsdtTransactions()) {
+            let usdtUsdtSpread = new Spread();
+
+            if (this.usdtUsdcSpreads.has(transactionsQuotePair.base))
+                usdtUsdtSpread = this.usdtUsdcSpreads.get(transactionsQuotePair.base)
+
+            usdtUsdtSpread = this.calculateSpreadByDirection(usdtUsdtSpread, transactionsQuotePair, "usdt_to_usdt")
+            this.usdtUsdtSpreads.set(transactionsQuotePair.base, usdtUsdtSpread)
         }
     }
 
@@ -184,7 +199,14 @@ class Spreader {
 
             spread.buy_transactions = transactionsQuotePair.usdcTransactions
             spread.sell_transactions = transactionsQuotePair.usdtTransactions
-        } else {
+        } else if (direction === 'usdt_to_usdt') {
+            spread.best_buy_price = this.findBestPriceInSide(transactionsQuotePair.usdtTransactions, 'buy')
+            spread.best_sell_price = this.findBestPriceInSide(transactionsQuotePair.usdtTransactions, 'sell')
+
+            spread.last_transaction_time_in_buy = transactionsQuotePair.usdtLastTransactionUpdateTime
+            spread.last_transaction_time_in_sell = transactionsQuotePair.usdtLastTransactionUpdateTime
+        }
+        else {
             throw new Error(`Invalid way to calculate spread: ${direction}`);
         }
 
@@ -219,8 +241,6 @@ class Renderer {
     sortSpreads(spreads) {
         return new Map(
             [...spreads.entries()].sort((a, b) => {
-
-
                 return parseFloat(b[1].percent_profit) - parseFloat(a[1].percent_profit)
             })
         );
@@ -229,9 +249,11 @@ class Renderer {
     renderSpreads(renderer) {
         let sortedUsdtUsdcSpreads = this.sortSpreads(spreader.usdtUsdcSpreads)
         let sortedUsdcUsdtSpreads = this.sortSpreads(spreader.usdcUsdtSpreads)
+        let sortedUsdtUsdtSpreads = this.sortSpreads(spreader.usdtUsdtSpreads)
 
         renderer.renderSpread(sortedUsdtUsdcSpreads, "USDT-USDC");
         renderer.renderSpread(sortedUsdcUsdtSpreads, "USDC-USDT");
+        renderer.renderSpread(sortedUsdtUsdtSpreads, "USDT-USDT");
     }
 
     renderSpread(spreads, spreadType) {
@@ -240,6 +262,9 @@ class Renderer {
         if (spreadType === "USDC-USDT") {
             domSelector = "usdcUsdtSpreadsInfo"
             spreadName = "USDC → USDT"
+        } else if (spreadType === "USDT-USDT") {
+            domSelector = "usdtUsdtSpreadsInfo"
+            spreadName = "USDT → USDT"
         }
 
         let spreadsInfoDiv = document.getElementById(domSelector)
